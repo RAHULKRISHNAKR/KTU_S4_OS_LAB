@@ -1,3 +1,85 @@
+/*
+1. FCFS (First Come First Served) Algorithm
+    
+    1. Input: Number of processes (n), arrival time (at) and burst time (bt) for each process.
+    2. Sorting: Sort processes by arrival time (at) to ensure they are processed in the order they arrive.
+    3. Initialization:
+         `ct`: Completion time (initialized to 0) for the first process, as there's no prior execution.
+         `wt`: Waiting time (initialized to 0 for each process).
+         `tat`: Turnaround time (initialized to 0 for each process).
+    4. Process Loop:
+         Iterate through the sorted processes:
+             Update completion time for the current process: `ct[i] = ct[i-1] + bt[i]`, considering the previous process's completion time.
+             Calculate waiting time for the current process: `wt[i] = ct[i] - at[i] - bt[i]`. It considers the difference between completion time, arrival time, and burst time.
+             Calculate turnaround time for the current process: `tat[i] = wt[i] + bt[i]`.
+    5. Output: Print process name, completion time, waiting time, and turnaround time for each process.
+    6. Average Metrics: Calculate and print the average waiting time (sum of all waiting times divided by n) and average turnaround time (sum of all turnaround times divided by n).
+
+2. SJF (Shortest Job First) Algorithm (Non-preemptive)
+    
+        1. Input: Number of processes (n), arrival time (at) and burst time (bt) for each process.
+        2. Ready List: Create a data structure (like a queue) to store ready processes (processes that have arrived).
+        3. Initialization: Same as FCFS (ct, wt, tat initialized to 0).
+        4. Process Loop:
+             Continuously loop until all processes are completed:
+                 Add processes to the ready list based on their arrival time.
+                 Find the process in the ready list with the shortest burst time.
+                 Update completion time: `ct = ct + bt[selected_process]`.
+                 Update waiting time for all processes in the ready list **except** the selected one: `wt[i] = ct - at[i] - bt[i]` (consider processes that arrived before the selected one).
+                 Update turnaround time for the selected process: `tat[selected_process] = wt[selected_process] + bt[selected_process]`.
+                 Remove the selected process from the ready list.
+        5. Output: Same as FCFS.
+        6. Average Metrics: Same as FCFS.
+    
+    
+    3. Priority Scheduling Algorithm (Non-preemptive)
+    
+    1. Input: Number of processes (n), arrival time (at), burst time (bt), and priority (pr) for each process (lower numerical value represents higher priority).
+    2. Ready List: Same as SJF.
+    3. Initialization: Same as FCFS (ct, wt, tat initialized to 0).
+    4. Process Loop: Similar to SJF, but prioritize processes based on their priority instead of burst time:
+         Find the process in the ready list with the highest priority (lowest numerical value in pr).
+         Update completion time, waiting time (for non-selected processes), and turnaround time (for the selected process) using the same formulas as SJF.
+         Remove the selected process from the ready list.
+
+
+4. Round Robin
+Algorithm:
+
+    Input: Number of processes (n), arrival time (at), burst time (bt) for each process, and time quantum (t).
+    Data Structures:
+    q: Queue to store process IDs during scheduling.
+    p: Array of structures to store process information (same as other functions).
+    Initialization:
+    ls: Local variable to keep track of the number of completed processes (initialized to 0).
+    front and rear variables to manage the queue q (both initialized to -1, indicating an empty queue).
+    idle: Flag to track idle CPU time (initialized to 0, meaning CPU is busy initially).
+    Process Loop:
+    Iterate until all processes are completed (ls < n):
+    For each process:
+    If the process arrival time is less than or equal to the current time (i) and its status is 0 (not yet processed), add the process ID to the queue (enqueue(j)) and update its status to 1 (under process).
+    Check for idle CPU time:
+    If idle is 1 and the queue is empty (front == -1), it indicates an idle CPU period. Add "Idle" to the Gantt chart information (d) with the current time as both start and completion time (d[num].st = i; d[num].ct = i;). Increment i to reflect the idle time and set idle back to 0.
+    If the queue is not empty (front != -1):
+    If idle is 1, update the completion time in the Gantt chart for the previous process (d[num].ct = i). Set idle to 0 and increment num to move to the next entry in the Gantt chart information.
+    Dequeue a process ID from the front of the queue (k = dequeue()).
+    Update the start time in the Gantt chart for the dequeued process (d[num].st = i).
+    If the remaining burst time of the process (p[k].left) is less than or equal to the time quantum (t):
+    Update the completion time in the Gantt chart (d[num].ct = i + p[k].left).
+    Update the process's completion time (p[k].ct = d[num].ct), turnaround time (p[k].tt = i - p[k].at), and waiting time (p[k].wt = p[k].tt - p[k].bt), marking it as completed.
+    Increment ls to indicate one more process completion.
+    Increment num to the next Gantt chart information entry.
+    Else (remaining burst time is greater than the time quantum):
+    Reduce the remaining burst time of the process (p[k].left = p[k].left - t).
+    Enqueue the process ID back to the queue (enqueue(k)).
+    Increment num to the next Gantt chart information entry.
+    If none of the above conditions apply, simply increment the current time (i).
+    Output: Print process information like name, completion time, waiting time, and turnaround time for each process.
+    Gantt Chart: Display the Gantt chart information (d) showing process execution and idle periods.
+    Average Metrics: Calculate and print the average waiting time (sum of all waiting times divided by n) and average turnaround time (sum of all turnaround times divided by n).
+
+*/
+
 #include<stdio.h>
 #include<string.h>
 
