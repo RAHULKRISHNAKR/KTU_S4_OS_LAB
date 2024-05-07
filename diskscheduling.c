@@ -179,6 +179,7 @@ void fCFS(int head, int n, int arr[30])
         printf("%d ", arr[i]);
     }
     printf("\nSeek Time = %d\n\n", time);
+    printf("\nAverage Seek Time = %d\n\n", time/n);
 }
 
 void sSTF(int head, int n, int arr[30])
@@ -206,150 +207,83 @@ void sSTF(int head, int n, int arr[30])
         processed[minIndex] = 1;
     }
     printf("\nSeek Time = %d\n", time);
+    printf("\nAverage Seek Time = %d\n", time/n);
 }
 
-void scan(int head, int n, int arr[30])
-{
-    int dir = 1;
-    int siz, prev;
-    printf("Enter the Size:");
-    scanf("%d", &siz);
-    printf("\nEnter the previous position...\n");
-    scanf("%d", &prev);
-    if (prev > head)
-        dir = -1;
+int scan() {
 
-    int ar1[30], ar2[30], n1 = 0, n2 = 0;
-     if(dir==1)
-    {ar1[0] =siz -1;
-    n1 = 1;}
-    else
-    {ar2[0] = 0;
-    n2 = 1;}
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] > head)
-        {
-            ar1[n1++] = arr[i];
-        }
-        else
-        {
-            ar2[n2++] = arr[i];
+    int i,init,np,dir,temp,size,totalDisk,req[50];
+    printf("Enter the number of process : ");
+    scanf("%d",&np);
+    printf("Enter the request sequence : ");
+    for(i=0;i<np;i++){
+        scanf("%d",&req[i]);
+    }
+    printf("Enter disk size : ");
+    scanf("%d",&size);
+    printf("Enter the initial disk position : ");
+    scanf("%d",&init);
+    printf("Enter direction of head (0 for left to right any other number for right to left) : ");
+    scanf("%d",&dir);
+    for(i=0;i<np;i++){
+        for(int j=0;j<np-i-1;j++){
+            if(req[j]>req[j+1]){
+                temp=req[j];
+                req[j]=req[j+1];
+                req[j+1]=temp;
+            }
         }
     }
-    isort(ar1, n1, -1);
-    isort(ar2, n2, 1);
+    if(!dir){
+        totalDisk=(size-init)+(size-req[0]);
+    }
+    else{
+        totalDisk=(init+req[np-1]);
+    }
+    printf("The total disk movement : %d\n",totalDisk);
+    return 0;
 
-    int ans = 0;
-    printf("SCAN ORDER IS:\n");
-    n2--;
-    n1--;
-    printf("%d ", head);
-    if (dir == -1)
-    {
-        while (n2 >= 0)
-        {
-            ans += abs(head - ar2[n2]);
-            printf("%d ", ar2[n2]);
-            head = ar2[n2--];
-        }
-        ans += head - 0; 
-        while (n1 >= 0)
-        {
-            ans += abs(head - ar1[n1]);
-            printf("%d ", ar1[n1]);
-            head = ar1[n1--];
-        }
-        printf("\n");
-        printf("Seek Time = %d\n\n", ans);
-    }
-    else
-    {
-        while (n1 >= 0)
-        {
-            ans += abs(head - ar1[n1]);
-            printf("%d ", ar1[n1]);
-            head = ar1[n1--];
-        }
-        ans += siz - head;
-        while (n2 >= 0)
-        {
-            ans += abs(head - ar2[n2]);
-            printf("%d ", ar2[n2]);
-            head = ar2[n2--];
-        }
-        printf("\n");
-        printf("Seek Time = %d\n\n", ans-1);
-    }
 }
 
 
-void cscan(int head, int n, int arr[30])
-{
-    int dir = 1, siz, prev;
-    printf("Enter the Size:");
-    scanf("%d", &siz);
-    printf("\nEnter the previous position...\n");
-    scanf("%d", &prev);
-    if (prev > head)
-        dir = -1;
-
-    int ar1[30], ar2[30], n1 = 0, n2 = 0;
-    ar1[0] = siz - 1;
-    n1 = 1;
-    ar2[0] = 0;
-    n2 = 1;
-    for (int i = 0; i < n; i++)
-    {
-        if (arr[i] > head)
-        {
-            ar1[n1++] = arr[i];
-        }
-        else
-        {
-            ar2[n2++] = arr[i];
+int cscan(){
+    int i,init,np,dir,temp,size,totalDisk,req[50];
+    printf("Enter the number of process : ");
+    scanf("%d",&np);
+    printf("Enter the request sequence : ");
+    for(i=0;i<np;i++){
+        scanf("%d",&req[i]);
+    }
+    printf("Enter disk size : ");
+    scanf("%d",&size);
+    printf("Enter the initial disk position : ");
+    scanf("%d",&init);
+    printf("Enter direction of head (0 for left to right any other number for right to left) : ");
+    scanf("%d",&dir);
+    for(i=0;i<np;i++){
+        for(int j=0;j<np-i-1;j++){
+            if(req[j]>req[j+1]){
+                temp=req[j];
+                req[j]=req[j+1];
+                req[j+1]=temp;
+            }
         }
     }
-    isort(ar1, n1, -1);
-    isort(ar2, n2, 1);
-
-    int ans = 0;
-    printf("CSCAN ORDER IS:\n");
-    printf("%d ", head);
-    if (dir == -1)
-    {
-        n2--;
-        while (n2 >= 0)
-        {
-            ans += abs(head - ar2[n2]);
-            printf("%d ", ar2[n2]);
-            head = ar2[n2--];
-        }
-        for (int i = 0; i < n1; i++)
-        {
-            ans += abs(head - ar1[i]);
-            printf("%d ", ar1[i]);
-            head = ar1[i];
+    int point=init;
+    for(i=0;i<np;i++){
+        if(req[i]>point){
+            point=req[i-1];
+            break;
         }
     }
-    else
-    {
-        n1--;
-        while (n1 >= 0)
-        {
-            ans += abs(head - ar1[n1]);
-            printf("%d ", ar1[n1]);
-            head = ar1[n1--];
-        }
-        for (int i = 0; i < n2; i++)
-        {
-            ans += abs(head - ar2[i]);
-            printf("%d ", ar2[i]);
-            head = ar2[i];
-        }
+    if(!dir){
+        totalDisk=(size-init)+(point)+size;
     }
-    printf("\n");
-    printf("Seek Time = %d\n\n", ans);
+    else{
+        totalDisk=(init+req[np-1]);
+    }
+    printf("The total disk movement : %d\n",totalDisk);
+    return 0;
 }
 
 void look(int head, int n, int arr[30])
@@ -476,6 +410,7 @@ void clook(int head, int n, int arr[30])
     printf("Seek Time = %d\n\n", ans);
 }
 
+
 int main()
 {
     int head, n;
@@ -503,10 +438,10 @@ int main()
             sSTF(head, n, arr);
             break;
         case 3:
-            scan(head, n, arr);
+            scan();
             break;
         case 4:
-            cscan(head, n, arr);
+            cscan();
             break;
         case 5:
             look(head, n, arr);
